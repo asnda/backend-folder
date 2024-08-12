@@ -1,22 +1,20 @@
 const express = require('express');
 const sequelize = require('./config/db');
+const postRoutes = require('./routes/postRoutes');
+require('dotenv').config();
 
 const app = express();
+
 app.use(express.json());
 
-// Import routes
-const postRoutes = require('./routes/postRoutes');
-const userRoutes = require('./routes/userRoutes');
-const commentRoutes = require('./routes/commentRoutes');
-
-// Use routes
 app.use('/api/posts', postRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/comments', commentRoutes);
 
-// Sync database and start server
+const PORT = process.env.PORT || 5002;
+
 sequelize.sync().then(() => {
-    app.listen(5000, () => {
-        console.log('Server is running on port 5000');
-    });
-}).catch(err => console.log('Database connection failed:', err));
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}).catch(error => {
+  console.error('Unable to connect to the database:', error);
+});
